@@ -1,0 +1,23 @@
+# Build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+.vs/
+
+# NuGet
+*.nupkg
+project.lock.json
+project.assets.json
+packages/
+.nuget/
+
+# Database (auto-generated at runtime)
+*.accdb
+*.ldb
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>ChompMan</RootNamespace>
+    <AssemblyName>ChompMan</AssemblyName>
+    <OptionStrict>On</OptionStrict>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionInfer>On</OptionInfer>
+    <Platforms>AnyCPU</Platforms>
+    <StartupObject>ChompMan.Program</StartupObject>
+    <!-- Allows cross-compilation targeting Windows on non-Windows hosts -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- OleDb is a separate package on .NET 8+ (ACE OLEDB 16.0 is Windows-only at runtime) -->
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChompMan.Core\ChompMan.Core.vbproj" />
+  </ItemGroup>
+
+  <!-- Exclude files that live in ChompMan.Core to avoid duplicate type definitions -->
+  <ItemGroup>
+    <Compile Remove="GameEngine\**" />
+    <Compile Remove="DataAccess\Models.vb" />
+    <Compile Remove="DataAccess\IScoreRepository.vb" />
+    <Compile Remove="DataAccess\ILevelRepository.vb" />
+  </ItemGroup>
+
+</Project>
