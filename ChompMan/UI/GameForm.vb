@@ -39,7 +39,7 @@ Namespace UI
         Private _ghostBrushes() As SolidBrush
 
         ' ── Controls ──────────────────────────────────────────────────────────
-        Private _panel As Panel
+        Private _panel As BufferedPanel
         Private _lblScore As Label
         Private _lblLives As Label
         Private _lblLevel As Label
@@ -91,7 +91,7 @@ Namespace UI
                 .Location = New Point(340, 8)
             }
 
-            _panel = New Panel() With {
+            _panel = New BufferedPanel() With {
                 .Location = New Point(0, HudHeight),
                 .BackColor = Color.Black
             }
@@ -420,6 +420,23 @@ Namespace UI
                 Next
             End If
             MyBase.Dispose(disposing)
+        End Sub
+
+    End Class
+
+    ''' <summary>
+    ''' A <see cref="Panel"/> with double-buffering enabled so the game loop can
+    ''' repaint every frame without flickering.
+    ''' </summary>
+    Friend Class BufferedPanel
+        Inherits Panel
+
+        Public Sub New()
+            DoubleBuffered = True
+            SetStyle(ControlStyles.OptimizedDoubleBuffer Or
+                     ControlStyles.AllPaintingInWmPaint Or
+                     ControlStyles.UserPaint, True)
+            UpdateStyles()
         End Sub
 
     End Class
