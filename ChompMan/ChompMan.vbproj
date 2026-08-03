@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>ChompMan</RootNamespace>
     <AssemblyName>ChompMan</AssemblyName>
@@ -16,8 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- OleDb is a separate package on .NET 8+ (ACE OLEDB 16.0 is Windows-only at runtime) -->
-    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+    <!-- OleDb is built into .NET Framework — no package needed -->
   </ItemGroup>
 
   <ItemGroup>

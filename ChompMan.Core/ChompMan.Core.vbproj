@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <RootNamespace>ChompMan</RootNamespace>
     <AssemblyName>ChompMan.Core</AssemblyName>
     <OptionStrict>On</OptionStrict>
