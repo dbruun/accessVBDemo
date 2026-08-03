@@ -7,8 +7,7 @@ Imports ChompMan.DataAccess
 Namespace UI
 
     ''' <summary>
-    ''' Displays and allows editing of Settings key/value rows stored in the
-    ''' Access database.
+    ''' Displays and allows editing of Settings key/value rows stored in SQL Server.
     ''' </summary>
     Public Class SettingsForm
         Inherits Form
@@ -91,7 +90,7 @@ Namespace UI
         Private Sub LoadSettings()
             _grid.Rows.Clear()
             Try
-                Dim repo As New AccessSettingsRepository(Program.DbPath)
+                Dim repo = Program.CreateSettingsRepository()
                 Dim settings = repo.GetAll()
                 For Each s In settings
                     _grid.Rows.Add(s.Key, s.Value)
@@ -119,7 +118,7 @@ Namespace UI
 
         Private Sub _btnSave_Click(sender As Object, e As EventArgs) Handles _btnSave.Click
             Try
-                Dim repo As New AccessSettingsRepository(Program.DbPath)
+                Dim repo = Program.CreateSettingsRepository()
                 For Each row As DataGridViewRow In _grid.Rows
                     If row.IsNewRow Then Continue For
                     Dim key = CStr(row.Cells(0).Value)

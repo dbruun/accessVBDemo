@@ -6,7 +6,7 @@ Imports ChompMan.DataAccess
 
 Namespace UI
 
-    ''' <summary>Displays the top-10 high scores loaded from the Access database.</summary>
+    ''' <summary>Displays the top-10 high scores loaded from the SQL Server database.</summary>
     Public Class HighScoresForm
         Inherits Form
 
@@ -69,7 +69,7 @@ Namespace UI
 
         Private Sub LoadScores()
             Try
-                Dim repo As New AccessScoreRepository(Program.DbPath)
+                Dim repo = Program.CreateScoreRepository()
                 Dim scores = repo.GetTopScores(10)
                 PopulateList(scores)
             Catch ex As Exception

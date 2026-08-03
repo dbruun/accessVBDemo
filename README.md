@@ -1,7 +1,7 @@
 # ChompMan
 
-A Pac-Man-style arcade game written in **VB.NET / WinForms** (.NET Framework 4.8),
-backed by a **Microsoft Access (.accdb)** database.
+A Pac-Man-style arcade game written in **VB.NET / WinForms** (.NET 8),
+backed by a **SQL Server or Azure SQL** database through EF Core.
 
 ## Screenshots
 
@@ -24,19 +24,8 @@ The game uses pure GDI+ shape-based graphics — no external image assets are re
 | Requirement | Details |
 |---|---|
 | **Visual Studio 2022** (or newer) | Community Edition is free |
-| **.NET Framework 4.8** | Pre-installed on Windows 10/11 |
-| **Microsoft ACE OLEDB 16.0 (64-bit)** | Part of Microsoft Access Database Engine 2016 Redistributable — see note below |
-
-### ACE OLEDB Runtime
-
-The game reads/writes the `.accdb` database via the ACE OLEDB 16.0 provider.
-Download the 64-bit redistributable from Microsoft:
-
-> **Microsoft Access Database Engine 2016 Redistributable**  
-> <https://www.microsoft.com/en-us/download/details.aspx?id=54920>
-
-Choose `AccessDatabaseEngine_X64.exe` (64-bit). If you have 32-bit Microsoft Office
-installed you may need the 32-bit version and must also compile ChompMan as x86.
+| **.NET 8 SDK** | Required to build |
+| **SQL Server or Azure SQL** | Required to persist scores, levels, and settings |
 
 ## Building
 
@@ -52,16 +41,22 @@ dotnet build   ChompMan.sln -c Release
 
 Or open `ChompMan.sln` in Visual Studio and press **F5**.
 
+Configure the database before running. The application reads the connection
+string from `CHOMPMAN_CONNECTION_STRING`; when it is unset, it uses LocalDB:
+
+```powershell
+$env:CHOMPMAN_CONNECTION_STRING = "Server=(localdb)\MSSQLLocalDB;Database=ChompMan;Integrated Security=True;TrustServerCertificate=True"
+```
+
 ## Running
 
 ```bash
 dotnet run --project ChompMan/ChompMan.vbproj
 ```
 
-The first time the game starts it will create `ChompMan.accdb` in the same
-directory as the executable and seed it with sample data.  If the ACE runtime
-is not installed a warning is shown and the game runs in DB-less mode (scores
-are not saved).
+On startup, EF Core applies the bundled SQL Server migration. If the database
+is unavailable, the game runs in DB-less mode (scores and settings are not
+saved).
 
 ## Controls
 

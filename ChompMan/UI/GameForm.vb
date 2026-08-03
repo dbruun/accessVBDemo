@@ -50,8 +50,8 @@ Namespace UI
 
         ''' <summary>Creates the game form and loads level definitions.</summary>
         Public Sub New()
-            _levelRepo = New AccessLevelRepository(Program.DbPath)
-            _scoreRepo = New AccessScoreRepository(Program.DbPath)
+            _levelRepo = Program.CreateLevelRepository()
+            _scoreRepo = Program.CreateScoreRepository()
             _levelDefs = TryLoadLevels()
 
             InitializeComponent()

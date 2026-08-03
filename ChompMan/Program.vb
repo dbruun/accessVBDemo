@@ -1,32 +1,52 @@
 Imports System
-Imports System.IO
 Imports System.Windows.Forms
 Imports ChompMan.DataAccess
+Imports Microsoft.EntityFrameworkCore
 
 ''' <summary>Application entry point.</summary>
 Friend Module Program
 
-    ''' <summary>Database path relative to the executable.</summary>
-    Friend ReadOnly Property DbPath As String
+    Private ReadOnly Property ConnectionString As String
         Get
-            Return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ChompMan.accdb")
+            Return Environment.GetEnvironmentVariable("CHOMPMAN_CONNECTION_STRING",
+                EnvironmentVariableTarget.Process)
         End Get
     End Property
+
+    Friend Function CreateScoreRepository() As IScoreRepository
+        Return New EfScoreRepository(New ChompManDbContext(CreateDbContextOptions()))
+    End Function
+
+    Friend Function CreateLevelRepository() As ILevelRepository
+        Return New EfLevelRepository(New ChompManDbContext(CreateDbContextOptions()))
+    End Function
+
+    Friend Function CreateSettingsRepository() As EfSettingsRepository
+        Return New EfSettingsRepository(New ChompManDbContext(CreateDbContextOptions()))
+    End Function
+
+    Private Function CreateDbContextOptions() As DbContextOptions(Of ChompManDbContext)
+        Dim dbConnectionString = ConnectionString
+        If String.IsNullOrWhiteSpace(dbConnectionString) Then
+            dbConnectionString = "Server=(localdb)\MSSQLLocalDB;Database=ChompMan;Integrated Security=True;TrustServerCertificate=True"
+        End If
+        Return New DbContextOptionsBuilder(Of ChompManDbContext)().UseSqlServer(dbConnectionString).Options
+    End Function
 
     <STAThread>
     Sub Main()
         Application.EnableVisualStyles()
         Application.SetCompatibleTextRenderingDefault(False)
 
-        ' Ensure database exists and is seeded
         Try
-            Dim init As New DatabaseInitializer(DbPath)
-            init.EnsureCreated()
+            Using context As New ChompManDbContext(CreateDbContextOptions())
+                context.Database.Migrate()
+            End Using
         Catch ex As Exception
             MessageBox.Show(
                 "Could not initialise the ChompMan database." & Environment.NewLine &
                 Environment.NewLine &
-                "Make sure the Microsoft ACE OLEDB 16.0 runtime (64-bit) is installed." &
+                "Set CHOMPMAN_CONNECTION_STRING to a valid SQL Server or Azure SQL connection string." &
                 Environment.NewLine & Environment.NewLine &
                 ex.Message,
                 "ChompMan – Database Error",
