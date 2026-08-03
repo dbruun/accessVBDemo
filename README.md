@@ -79,26 +79,13 @@ dotnet test ChompMan.Tests/ChompMan.Tests.vbproj -v normal
 ChompMan.sln
 │
 ├── ChompMan/                   VB.NET WinForms project
-│   ├── GameEngine/             Pure game logic (no WinForms / DB deps)
-│   │   ├── CellType.vb
-│   │   ├── Direction.vb
-│   │   ├── GamePhase.vb
-│   │   ├── GhostMode.vb
-│   │   ├── Position.vb
-│   │   ├── Maze.vb
-│   │   ├── GameEntities.vb     Player, Ghost
-│   │   ├── GameState.vb        LevelDefinition, GameState
-│   │   └── Engine.vb           Main update/tick logic
-│   │
-│   ├── DataAccess/             ADO.NET / Access layer
-│   │   ├── Models.vb           DTOs: ScoreEntry, LevelData, SettingEntry
-│   │   ├── IScoreRepository.vb
-│   │   ├── ILevelRepository.vb
-│   │   ├── AccessScoreRepository.vb
-│   │   ├── AccessLevelRepository.vb
-│   │   ├── AccessSettingsRepository.vb
-│   │   ├── DatabaseInitializer.vb
-│   │   └── DbSetup.sql         Reference DDL script
+│   ├── DataAccess/             EF Core / SQL Server implementation
+│   │   ├── ChompManDbContext.vb
+│   │   ├── Entities.vb
+│   │   ├── EfScoreRepository.vb
+│   │   ├── EfLevelRepository.vb
+│   │   ├── EfSettingsRepository.vb
+│   │   └── Migrations/         EF Core SQL Server migrations
 │   │
 │   ├── UI/                     WinForms screens
 │   │   ├── MainMenuForm.vb
@@ -107,7 +94,20 @@ ChompMan.sln
 │   │   ├── GameOverForm.vb
 │   │   └── SettingsForm.vb
 │   │
-│   └── Program.vb              Entry point; initialises DB
+│   └── Program.vb              Entry point; applies DB migrations
+│
+├── ChompMan.Core/              Platform-independent contracts and game logic
+│   ├── DataAccess/
+│   │   ├── Models.vb           DTOs: ScoreEntry, LevelData, SettingEntry
+│   │   ├── IScoreRepository.vb
+│   │   ├── ILevelRepository.vb
+│
+│   └── GameEngine/             Pure game logic (no WinForms / DB deps)
+│       ├── CellType.vb
+│       ├── Direction.vb
+│       ├── GameState.vb
+│       ├── Maze.vb
+│       └── Engine.vb           Main update/tick logic
 │
 └── ChompMan.Tests/             MSTest unit-test project
     ├── MovementTests.vb
@@ -121,7 +121,7 @@ ChompMan.sln
 |---|---|
 | `Players` | PlayerId (PK), Name, CreatedOn |
 | `HighScores` | ScoreId (PK), PlayerId (FK), Score, LevelReached, PlayedOn |
-| `Levels` | LevelId (PK), LevelNumber, MazeLayout (memo), GhostSpeed, PelletCount |
+| `Levels` | LevelId (PK), LevelNumber, MazeLayout (NVARCHAR(MAX)), GhostSpeed, PelletCount |
 | `Settings` | Key (PK), Value |
 
 Maze layouts are stored as multi-line strings using:
