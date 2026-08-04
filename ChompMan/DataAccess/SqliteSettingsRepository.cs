@@ -43,6 +43,8 @@ public class SqliteSettingsRepository
 
     public void Upsert(string key, string value)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+
         using var conn = new SqliteConnection(_connectionString);
         conn.Open();
         using var cmd = new SqliteCommand("INSERT INTO Settings ([Key], Value) VALUES ($key, $value) ON CONFLICT([Key]) DO UPDATE SET Value = excluded.Value", conn);

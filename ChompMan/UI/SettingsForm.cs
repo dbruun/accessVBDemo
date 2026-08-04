@@ -101,16 +101,22 @@ public class SettingsForm : Form
             var settings = repo.GetAll();
             foreach (var s in settings)
             {
-                _grid.Rows.Add(s.Key, s.Value);
+                AddSettingRow(s.Key, s.Value);
             }
         }
         catch
         {
             foreach (var pair in DefaultSettings())
             {
-                _grid.Rows.Add(pair.Key, pair.Value);
+                AddSettingRow(pair.Key, pair.Value);
             }
         }
+    }
+
+    private void AddSettingRow(string key, string value)
+    {
+        var index = _grid.Rows.Add(key, value);
+        _grid.Rows[index].Tag = key;
     }
 
     private static Dictionary<string, string> DefaultSettings()
@@ -135,12 +141,11 @@ public class SettingsForm : Form
             var repo = new SqliteSettingsRepository(Program.DbPath);
             foreach (DataGridViewRow row in _grid.Rows)
             {
-                if (row.IsNewRow)
+                if (row.IsNewRow || row.Tag is not string key)
                 {
                     continue;
                 }
 
-                var key = Convert.ToString(row.Cells[0].Value);
                 var value = Convert.ToString(row.Cells[1].Value) ?? string.Empty;
                 repo.Upsert(key, value);
             }
